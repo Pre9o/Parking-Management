@@ -31,10 +31,10 @@ class connect_sql():
         return connection
     
     def execute_query(self, query):
-        cursor = self.connection.cursor()
+        cursor = self.cursor()
         try:
             cursor.execute(query)
-            self.connection.commit()
+            self.commit()
             print("Query successful")
         except Error as err:
             print(f"Error: '{err}'")

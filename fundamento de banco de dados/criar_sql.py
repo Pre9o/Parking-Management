@@ -50,6 +50,10 @@ class create_tables_for_estacionamento():
         self.user_password = user_password
         self.database_name = database_name
         self.define_table_atribuicao(host_name, user_name, user_password, database_name)
+        self.define_table_usuario(host_name, user_name, user_password, database_name)
+        self.define_table_veiculo(host_name, user_name, user_password, database_name)
+        self.define_table_estacionamento(host_name, user_name, user_password, database_name)
+        self.define_table_historico(host_name, user_name, user_password, database_name)
         
     def create_server_connection(self, host_name, user_name, user_password, database_name):
         connection = None
@@ -83,7 +87,10 @@ class create_tables_for_estacionamento():
                     )"""
                     
         self.create_table(connection, query)
-        
+        connection.close()
+    
+    def define_table_usuario(self, host_name, user_name, user_password, database_name):
+        connection = self.create_server_connection(host_name, user_name, user_password, database_name)
         query = """CREATE TABLE usuario (
                     nome_usuario VARCHAR(45) NOT NULL,
                     atribuicao_id_atribuicao INT NOT NULL,
@@ -93,7 +100,10 @@ class create_tables_for_estacionamento():
                     )"""
         
         self.create_table(connection, query)
+        connection.close()
         
+    def define_table_veiculo(self, host_name, user_name, user_password, database_name):
+        connection = self.create_server_connection(host_name, user_name, user_password, database_name)
         query = """CREATE TABLE veiculo (
                     placa_veiculo VARCHAR(45) NOT NULL,
                     modelo_veiculo VARCHAR(45) NOT NULL,
@@ -103,28 +113,35 @@ class create_tables_for_estacionamento():
                     )"""
                     
         self.create_table(connection, query)
+        connection.close()
         
+    def define_table_estacionamento(self, host_name, user_name, user_password, database_name):
+        connection = self.create_server_connection(host_name, user_name, user_password, database_name)
         query = """CREATE TABLE estacionamentos (
                     id_estacionamento INT NOT NULL,
                     placa_veiculo_estacionado VARCHAR(45) NOT NULL,
+                    data_entrada DATETIME NOT NULL,
+                    data_saida DATETIME NOT NULL,
                     PRIMARY KEY (id_estacionamento),
                     FOREIGN KEY (placa_veiculo_estacionado) REFERENCES veiculo (placa_veiculo)
                     )"""
                     
         self.create_table(connection, query)
+        connection.close()
         
+    def define_table_historico(self, host_name, user_name, user_password, database_name):
+        connection = self.create_server_connection(host_name, user_name, user_password, database_name)
         query = """CREATE TABLE historico (
-                    id_historico INT NOT NULL,
-                    placa_veiculo VARCHAR(45) NOT NULL,
-                    estacionamento_id_estacionamento INT NOT NULL,
-                    data_entrada DATETIME NOT NULL,
-                    data_saida DATETIME NOT NULL,
-                    PRIMARY KEY (id_historico),
-                    FOREIGN KEY (placa_veiculo) REFERENCES veiculo (placa_veiculo),
-                    FOREIGN KEY (estacionamento_id_estacionamento) REFERENCES estacionamentos (id_estacionamento)
-                    )"""
-                    
+                id_historico INT NOT NULL,
+                placa_veiculo VARCHAR(45) NOT NULL,
+                estacionamentos_id_estacionamento INT NOT NULL,
+                data_entrada DATETIME NOT NULL,
+                data_saida DATETIME NOT NULL,
+                PRIMARY KEY (id_historico),
+                FOREIGN KEY (placa_veiculo) REFERENCES veiculo (placa_veiculo),
+                FOREIGN KEY (estacionamentos_id_estacionamento) REFERENCES estacionamentos (id_estacionamento)
+                )"""
+                
         self.create_table(connection, query)
-        
         connection.close()
         
