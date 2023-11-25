@@ -12,7 +12,7 @@ def adicionar_atribuicao(host_name, user_name, user_password, database_name):
     nome_atribuicao = input("Digite o nome da atribuição: ")
     id_atribuicao = input("Digite o id da atribuição: ")
     
-    gerencia_atribuicao(host_name, user_name, user_password, database_name).criar_atribuicao(nome_atribuicao, id_atribuicao)
+    gerencia_atribuicao(host_name, user_name, user_password, database_name).criar_atribuicao(id_atribuicao, nome_atribuicao)
     
     print("Atribuição adicionada com sucesso!")
 
@@ -50,6 +50,7 @@ def main():
             create_tables_for_estacionamento(host_name, user_name, user_password, database_name)
             
             adicionar_usuario(host_name, user_name, user_password, database_name)
+            #adicionar_atribuicao(host_name, user_name, user_password, database_name)
             
     except Error as e:
         print("Erro ao conectar ao banco de dados MySQL", e)

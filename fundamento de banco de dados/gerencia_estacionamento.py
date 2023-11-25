@@ -32,20 +32,18 @@ class connect_sql():
         return connection
     
     def execute_query(self, query):
-        cursor = self.cursor()
         try:
-            cursor.execute(query)
-            self.commit()
+            self.cursor.execute(query)
+            self.connection.commit()
             print("Query successful")
         except Error as err:
             print(f"Error: '{err}'")
     
     def execute_read_query(self, query):
-        cursor = self.cursor()
         result = None
         try:
-            cursor.execute(query)
-            result = cursor.fetchall()
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
             return result
         except Error as err:
             print(f"Error: '{err}'")
@@ -57,16 +55,15 @@ class connect_sql():
             print("MySQL connection is closed")
             
     def insert_into_table(self, query):
-        cursor = self.connection.cursor()
         try:
-            cursor.execute(query)
+            self.cursor.execute(query)
             self.connection.commit()
             print("Insert into table successfully")
         except Error as err:
             print(f"Error: '{err}'")
             
     def select_from_table(self, query):
-        cursor = self.cursor()
+        cursor = self.cursor
         try:
             cursor.execute(query)
             result = cursor.fetchall()
@@ -75,7 +72,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def delete_from_table(self, query):
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -84,7 +81,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def update_table(self, query):
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -112,9 +109,12 @@ class gerencia_atribuicao():
     
     def get_atribuicao(self, nome_atribuicao):
         query = f"""SELECT id_atribuicao FROM atribuicao 
-                    WHERE nome_atribuicao = '{nome_atribuicao}'"""
+                WHERE nome_atribuicao = '{nome_atribuicao}'"""
         result = self.connection.select_from_table(query)
-        return result
+        if result:
+            return result[0][0]  # Acessa o primeiro elemento da primeira tupla
+        else:
+            return None  # ou outra indicação de valor não encontrado, se desejado
     
     def update_atribuicao(self, nome_atribuicao, id_atribuicao):
         query = f"""UPDATE atribuicao SET nome_atribuicao = '{nome_atribuicao}'
@@ -149,7 +149,7 @@ class gerencia_usuarios():
     
     def get_codigos_de_barra(self):
         query = f"""SELECT codigo_de_barra FROM usuario"""
-        result = self.connection.select_from_table(query)
+        result = self.connection.execute_read_query(query)
         
         codigo_gerado = random.randint(100000000000, 999999999999)
         
