@@ -1,4 +1,5 @@
 import mysql.connector
+import random
 from mysql.connector import Error
 from criar_sql import *
 
@@ -109,6 +110,12 @@ class gerencia_atribuicao():
         result = self.connection.select_from_table(query)
         return result
     
+    def get_atribuicao(self, nome_atribuicao):
+        query = f"""SELECT id_atribuicao FROM atribuicao 
+                    WHERE nome_atribuicao = '{nome_atribuicao}'"""
+        result = self.connection.select_from_table(query)
+        return result
+    
     def update_atribuicao(self, nome_atribuicao, id_atribuicao):
         query = f"""UPDATE atribuicao SET nome_atribuicao = '{nome_atribuicao}'
                     WHERE id_atribuicao = '{id_atribuicao}'"""
@@ -139,6 +146,17 @@ class gerencia_usuarios():
         query = f"""SELECT * FROM usuario"""
         result = self.connection.select_from_table(query)
         return result
+    
+    def get_codigos_de_barra(self):
+        query = f"""SELECT codigo_de_barra FROM usuario"""
+        result = self.connection.select_from_table(query)
+        
+        codigo_gerado = random.randint(100000000000, 999999999999)
+        
+        while codigo_gerado in result:
+            codigo_gerado = random.randint(100000000000, 999999999999)
+        
+        return codigo_gerado
     
     def update_usuario(self, nome_usuario, atribuicao_usuario, codigo_de_barra):
         query = f"""UPDATE usuario SET nome_usuario = '{nome_usuario}', atribuicao_id_atribuicao = '{atribuicao_usuario}'
