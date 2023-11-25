@@ -72,7 +72,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def delete_from_table(self, query):
-        cursor = self.connection.cursor
+        cursor = self.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -81,7 +81,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def update_table(self, query):
-        cursor = self.connection.cursor
+        cursor = self.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -110,7 +110,7 @@ class gerencia_atribuicao():
     def get_atribuicao(self, nome_atribuicao):
         query = f"""SELECT id_atribuicao FROM atribuicao 
                 WHERE nome_atribuicao = '{nome_atribuicao}'"""
-        result = self.connection.select_from_table(query)
+        result = self.connection.execute_read_query(query)
         if result:
             return result[0][0]  # Acessa o primeiro elemento da primeira tupla
         else:
@@ -180,22 +180,23 @@ class gerencia_veiculos():
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
     def criar_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono):
-        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, marca_veiculo, ano_veiculo, codigo_de_barra)
+        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, dono_do_veiculo)
                     VALUES ('{placa_veiculo}', '{modelo_veiculo}', '{codigo_de_barra_dono}')"""
         self.connection.insert_into_table(query)
+        
         
     def read_veiculos(self):
         query = f"""SELECT * FROM veiculo"""
         result = self.connection.select_from_table(query)
         return result
     
-    def update_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono):
-        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', codigo_de_barra = '{codigo_de_barra_dono}'
+    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono):
+        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}'
                     WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
         
     def deletar_veiculo(self, placa_veiculo):
-        query = f"""DELETE FROM veiculo WHERE codigo_de_barra = '{placa_veiculo}'"""
+        query = f"""DELETE FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):
