@@ -32,10 +32,18 @@ def adicionar_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
     modelo = input("Digite o modelo do veículo: ").capitalize()
     usuario = input("Digite o codigo do dono: ")
+    id_estacionamento = input("Digite o id do estacionamento: ")
     
-    gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario)
+    gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario, id_estacionamento)
     
     print("Veículo adicionado com sucesso!")
+
+def adicionar_estacionamento(host_name, user_name, user_password, database_name):
+    id_estacionamento = input("Digite o id do estacionamento: ")
+    gerencia_estacionamento(host_name, user_name, user_password, database_name).criar_estacionamento(id_estacionamento)
+    
+    print("Estacionamento adicionado com sucesso!")
+
 
 def atualizar_usuario(host_name, user_name, user_password, database_name):
     codigo_de_barra = input("Digite o código de barra do usuário que quer atualizar: ")
@@ -50,7 +58,8 @@ def atualizar_veiculo(host_name, user_name, user_password, database_name):
     modelo = input("Digite o novo modelo do veículo: ").capitalize()
     dono_do_veiculo = input("Digite o novo dono do veículo: ").capitalize()
     nova_placa = input("Digite a nova placa do veículo: ").upper()
-    gerencia_veiculos(host_name, user_name, user_password, database_name).update_veiculo(placa, nova_placa,modelo, dono_do_veiculo)
+    id_estacionamento = input("Digite o novo id do estacionamento: ")
+    gerencia_veiculos(host_name, user_name, user_password, database_name).update_veiculo(placa, nova_placa,modelo, dono_do_veiculo, id_estacionamento)
     
     print("Veículo atualizado com sucesso!")
 
@@ -60,6 +69,15 @@ def atualizar_atribuicao(host_name, user_name, user_password, database_name):
     gerencia_atribuicao(host_name, user_name, user_password, database_name).update_atribuicao(nome_atribuicao, id_atribuicao)
     
     print("Atribuição atualizada com sucesso!")
+
+def atualizar_estacionamento(host_name, user_name, user_password, database_name):
+    id_estacionamento = input("Digite o id do estacionamento que quer atualizar: ")
+    novo_id_estacionamento = input("Digite o novo id do estacionamento: ")
+
+    gerencia_estacionamento(host_name, user_name, user_password, database_name).update_estacionamento(id_estacionamento, novo_id_estacionamento)
+    
+    print("Estacionamento atualizado com sucesso!")
+
 
 def remover_usuario(host_name, user_name, user_password, database_name):
     codigo_de_barra = input("Digite o código de barra do usuário que quer remover: ")
@@ -80,6 +98,17 @@ def remover_atribuicao(host_name, user_name, user_password, database_name):
     
     print("Atribuição removida com sucesso!")
 
+def remover_estacionamento(host_name, user_name, user_password, database_name):
+    id_estacionamento = input("Digite o id do estacionamento que quer remover: ")
+    gerencia_estacionamento(host_name, user_name, user_password, database_name).deletar_estacionamento(id_estacionamento)
+    
+    print("Estacionamento removido com sucesso!")
+
+
+
+
+
+
 
 
 
@@ -98,18 +127,19 @@ def main():
                 print("1 - Adicionar atribuição")
                 print("2 - Adicionar usuário")
                 print("3 - Adicionar veículo")
-                print("4 - Listar usuários")
-                print("5 - Listar veículos")
-                print("6 - Listar atribuições")
-                print("7 - Atualizar usuário")
-                print("8 - Atualizar veículo")
-                print("9 - Atualizar atribuição")
-                print("10 - Remover usuário")
-                print("11 - Remover veículo")
-                print("12 - Remover atribuição")
-                print("13 - Criar DataBase")
-                print("14 - Criar tabelas")
-                print("15 - Sair")
+                print("4 - Adicionar estacionamento")
+                print("5 - Listar usuários")
+                print("6 - Listar veículos")
+                print("7 - Listar atribuições")
+                print("8 - Atualizar usuário")
+                print("9 - Atualizar veículo")
+                print("10 - Atualizar atribuição")
+                print("11 - Remover usuário")
+                print("12 - Remover veículo")
+                print("13 - Remover atribuição")
+                print("14 - Criar DataBase")
+                print("15 - Criar Tabelas")
+                print("16 - Sair")
 
                 opcao = int(input("Digite a opção desejada: "))
                 
@@ -123,45 +153,48 @@ def main():
                     adicionar_veiculo(host_name, user_name, user_password, database_name)
 
                 elif opcao == 4:
+                    adicionar_estacionamento(host_name, user_name, user_password, database_name)
+
+                elif opcao == 5:
                     lista = gerencia_usuarios(host_name, user_name, user_password, database_name).read_usuarios()
                     for i in lista:
                         print(i)
 
-                elif opcao == 5:
+                elif opcao == 6:
                     lista = gerencia_veiculos(host_name, user_name, user_password, database_name).read_veiculos()
                     for i in lista:
                         print(i)
 
-                elif opcao == 6:
+                elif opcao == 7:
                     lista = gerencia_atribuicao(host_name, user_name, user_password, database_name).read_atribuicao()
                     for i in lista:
                         print(i)
                 
-                elif opcao == 7:
+                elif opcao == 8:
                     atualizar_usuario(host_name, user_name, user_password, database_name)
 
-                elif opcao == 8:
+                elif opcao == 9:
                     atualizar_veiculo(host_name, user_name, user_password, database_name)
 
-                elif opcao == 9:
+                elif opcao == 10:
                     atualizar_atribuicao(host_name, user_name, user_password, database_name)
 
-                elif opcao == 10:
+                elif opcao == 11:
                     remover_usuario(host_name, user_name, user_password, database_name)
 
-                elif opcao == 11:
+                elif opcao == 12:
                     remover_veiculo(host_name, user_name, user_password, database_name)
 
-                elif opcao == 12:
+                elif opcao == 13:
                     remover_atribuicao(host_name, user_name, user_password, database_name)
         
-                elif opcao == 13:
+                elif opcao == 14:
                     create_database_for_estacionamento(host_name, user_name, user_password)
 
-                elif opcao == 14:
+                elif opcao == 15:
                     create_tables_for_estacionamento(host_name, user_name, user_password, database_name)
 
-                elif opcao == 15:
+                elif opcao == 16:
                     break
             
             

@@ -179,25 +179,36 @@ class gerencia_veiculos():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono):
-        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, dono_do_veiculo)
-                    VALUES ('{placa_veiculo}', '{modelo_veiculo}', '{codigo_de_barra_dono}')"""
+    def criar_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
+        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, dono_do_veiculo, estacionamento_id_estacionamento)
+                    VALUES ('{placa_veiculo}', '{modelo_veiculo}', '{codigo_de_barra_dono}', '{id_estacionamento}')"""
         self.connection.insert_into_table(query)
-        
+        query = f"""INSERT INTO estac_veic (veiculo_placa_veiculo, estacionamentos_id_estacionamento)
+                    VALUES ('{placa_veiculo}', '{id_estacionamento}')"""
+        self.connection.insert_into_table(query)
         
     def read_veiculos(self):
         query = f"""SELECT * FROM veiculo"""
         result = self.connection.select_from_table(query)
         return result
     
-    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono):
-        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}'
+    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
+        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}', estacionamento_id_estacionamento = '{id_estacionamento}'
                     WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
+        query = f"""UPDATE estac_veic SET estacionamentos_id_estacionamento = '{id_estacionamento}', veiculo_placa_veiculo = '{nova_placa}'
+                    WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
+        self.connection.update_table(query)
+
+
         
     def deletar_veiculo(self, placa_veiculo):
+        query = f"""DELETE FROM estac_veic WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
+        self.connection.delete_from_table(query)
+        
         query = f"""DELETE FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.delete_from_table(query)
+        
         
     def close_connection(self):
         self.connection.close_connection()
@@ -211,23 +222,23 @@ class gerencia_estacionamento():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_estacionamento(self, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""INSERT INTO estacionamento (id_estacionamento, nome_estacionamento, endereco_estacionamento, vagas_estacionamento)
-                    VALUES ('{id_estacionamento}', '{placa_veiculo}', '{modelo_veiculo}', '{dono_do_veiculo}')"""
+    def criar_estacionamento(self, id_estacionamento):
+        query = f"""INSERT INTO estacionamentos (id_estacionamento)
+                    VALUES ('{id_estacionamento}')"""
         self.connection.insert_into_table(query)
         
     def read_estacionamento(self):
-        query = f"""SELECT * FROM estacionamento"""
+        query = f"""SELECT * FROM estacionamentos"""
         result = self.connection.select_from_table(query)
         return result
     
-    def update_estacionamento(self, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""UPDATE estacionamento SET nome_estacionamento = '{placa_veiculo}', endereco_estacionamento = '{modelo_veiculo}', vagas_estacionamento = '{dono_do_veiculo}'
+    def update_estacionamento(self, id_estacionamento, novo_id):
+        query = f"""UPDATE estacionamentos SET id_estacionamento = '{novo_id}'
                     WHERE id_estacionamento = '{id_estacionamento}'"""
         self.connection.update_table(query)
         
     def deletar_estacionamento(self, id_estacionamento):
-        query = f"""DELETE FROM estacionamento WHERE id_estacionamento = '{id_estacionamento}'"""
+        query = f"""DELETE FROM estacionamentos WHERE id_estacionamento = '{id_estacionamento}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):
