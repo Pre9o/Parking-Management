@@ -9,6 +9,212 @@ user_name = "root"
 user_password = "123456"
 lista = []
 
+
+def entrada_veiculo(host_name, user_name, user_password, database_name):
+    placa = input("Digite a placa do veículo: ").upper()
+    id_estacionamento = input("Digite o id do estacionamento: ")
+    codigo_de_barra = input("Digite o código de barra do usuário: ")
+
+    if codigo_de_barra == gerencia_veiculos(host_name, user_name, user_password, database_name).read_codigo_de_barra(placa):
+        gerencia_estacionamento(host_name, user_name, user_password, database_name).entrada_veiculo(placa, id_estacionamento)
+        print("Entrada realizada com sucesso!")
+
+    else:
+        print("C
+    
+    print("Veículo adicionado com sucesso!")
+
+
+def menu_gerenciamento(host_name, user_name, user_password, database_name):
+    while True:
+                print("1 - Gerenciar usuários")
+                print("2 - Gerenciar veículos")
+                print("3 - Gerenciar atribuições")
+                print("4 - Gerenciar estacionamentos")
+                print("5 - Sair")
+
+                option = input("Selecione a opção que você deseja gerenciar: ")
+
+                if option == "1":
+                    menu_usuarios(host_name, user_name, user_password, database_name)
+                    
+                elif option == "2":
+                    menu_veiculos(host_name, user_name, user_password, database_name)
+
+                elif option == "3":
+                    menu_atribuicao(host_name, user_name, user_password, database_name)
+
+                elif option == "4":
+                    menu_estacionamento(host_name, user_name, user_password, database_name)
+
+                elif option == "5":
+                    break
+
+                else:
+                    print("Opção inválida!")
+                    continue
+
+
+def menu_vigilante(host_name, user_name, user_password, database_name):
+    while True:
+        print("1 - Entrada de veículo")
+        print("2 - Saída de veículo")
+        print("3 - Voltar")
+
+        opcao = int(input("Digite a opção desejada: "))
+
+        if opcao == 1:
+            entrada_veiculo(host_name, user_name, user_password, database_name)
+
+        elif opcao == 2:
+            saida_veiculo(host_name, user_name, user_password, database_name)
+
+        elif opcao == 3:
+            break
+
+        else:
+            print("Opção inválida!")
+            continue
+
+
+def menu_usuarios(host_name, user_name, user_password, database_name):
+    while True:
+        print("1 - Adicionar usuário")
+        print("2 - Listar usuários")
+        print("3 - Atualizar usuário")
+        print("4 - Remover usuário")
+        print("5 - Voltar")
+
+        opcao = int(input("Digite a opção desejada: "))
+        
+        if opcao == 1:
+            adicionar_usuario(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 2:
+            lista = gerencia_usuarios(host_name, user_name, user_password, database_name).read_usuarios()
+            for i in lista:
+                print(i)
+
+        elif opcao == 3:
+            atualizar_usuario(host_name, user_name, user_password, database_name)
+
+        elif opcao == 4:
+            remover_usuario(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 5:
+            break
+
+        else:
+            print("Opção inválida!")
+            continue
+
+
+
+def menu_veiculos(host_name, user_name, user_password, database_name):
+    while True:
+        print("1 - Adicionar veículo")
+        print("2 - Listar veículos")
+        print("3 - Atualizar veículo")
+        print("4 - Remover veículo")
+        print("5 - Voltar")
+
+        opcao = int(input("Digite a opção desejada: "))
+        
+        if opcao == 1:
+            adicionar_veiculo(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 2:
+            lista = gerencia_veiculos(host_name, user_name, user_password, database_name).read_veiculos()
+            for i in lista:
+                print(i)
+
+        elif opcao == 3:
+            atualizar_veiculo(host_name, user_name, user_password, database_name)
+
+        elif opcao == 4:
+            remover_veiculo(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 5:
+            break
+
+        else:
+            print("Opção inválida!")
+            continue
+
+
+def menu_atribuicao(host_name, user_name, user_password, database_name):
+    while True:
+        print("1 - Adicionar atribuição")
+        print("2 - Listar atribuições")
+        print("3 - Atualizar atribuição")
+        print("4 - Remover atribuição")
+        print("5 - Voltar")
+
+        opcao = int(input("Digite a opção desejada: "))
+        
+        if opcao == 1:
+            adicionar_atribuicao(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 2:
+            lista = gerencia_atribuicao(host_name, user_name, user_password, database_name).read_atribuicao()
+            for i in lista:
+                print(i)
+
+        elif opcao == 3:
+            atualizar_atribuicao(host_name, user_name, user_password, database_name)
+
+        elif opcao == 4:
+            remover_atribuicao(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 5:
+            break
+
+        else:
+            print("Opção inválida!")
+            continue
+
+
+
+def menu_estacionamento(host_name, user_name, user_password, database_name):
+    while True:
+        print("1 - Adicionar estacionamento")
+        print("2 - Listar estacionamentos")
+        print("3 - Atualizar estacionamento")
+        print("4 - Remover estacionamento")
+        print("5 - Voltar")
+
+        opcao = int(input("Digite a opção desejada: "))
+        
+        if opcao == 1:
+            adicionar_estacionamento(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 2:
+            lista = gerencia_estacionamento(host_name, user_name, user_password, database_name).read_estacionamento()
+            for i in lista:
+                print(i)
+
+        elif opcao == 3:
+            atualizar_estacionamento(host_name, user_name, user_password, database_name)
+
+        elif opcao == 4:
+            remover_estacionamento(host_name, user_name, user_password, database_name)
+        
+        elif opcao == 5:
+            break
+
+        else:
+            print("Opção inválida!")
+            continue
+
+
+
+
+
+
+
+
+
+
 def adicionar_atribuicao(host_name, user_name, user_password, database_name):
     nome_atribuicao = input("Digite o nome da atribuição: ").capitalize()
     id_atribuicao = input("Digite o id da atribuição: ")
@@ -110,8 +316,6 @@ def remover_estacionamento(host_name, user_name, user_password, database_name):
 
 
 
-
-
 def main():
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -122,80 +326,32 @@ def main():
         if connection.is_connected():
             print('Conectado ao banco de dados MySQL')
 
+            
 
             while True:
-                print("1 - Adicionar atribuição")
-                print("2 - Adicionar usuário")
-                print("3 - Adicionar veículo")
-                print("4 - Adicionar estacionamento")
-                print("5 - Listar usuários")
-                print("6 - Listar veículos")
-                print("7 - Listar atribuições")
-                print("8 - Atualizar usuário")
-                print("9 - Atualizar veículo")
-                print("10 - Atualizar atribuição")
-                print("11 - Remover usuário")
-                print("12 - Remover veículo")
-                print("13 - Remover atribuição")
-                print("14 - Criar DataBase")
-                print("15 - Criar Tabelas")
-                print("16 - Sair")
+                print("1 - Menu de gerenciamento")
+                print("2 - Menu do vigilante")
+                print("3 - Criar banco de dados")
+                print("4 - Sair")
 
-                opcao = int(input("Digite a opção desejada: "))
-                
-                if opcao == 1:
-                    adicionar_atribuicao(host_name, user_name, user_password, database_name)
-                
-                elif opcao == 2:
-                    adicionar_usuario(host_name, user_name, user_password, database_name)
-                
-                elif opcao == 3:
-                    adicionar_veiculo(host_name, user_name, user_password, database_name)
+                option = input("Selecione a opção que você deseja gerenciar: ")
 
-                elif opcao == 4:
-                    adicionar_estacionamento(host_name, user_name, user_password, database_name)
+                if option == "1":
+                    menu_gerenciamento(host_name, user_name, user_password, database_name)
 
-                elif opcao == 5:
-                    lista = gerencia_usuarios(host_name, user_name, user_password, database_name).read_usuarios()
-                    for i in lista:
-                        print(i)
+                elif option == "2":
 
-                elif opcao == 6:
-                    lista = gerencia_veiculos(host_name, user_name, user_password, database_name).read_veiculos()
-                    for i in lista:
-                        print(i)
-
-                elif opcao == 7:
-                    lista = gerencia_atribuicao(host_name, user_name, user_password, database_name).read_atribuicao()
-                    for i in lista:
-                        print(i)
-                
-                elif opcao == 8:
-                    atualizar_usuario(host_name, user_name, user_password, database_name)
-
-                elif opcao == 9:
-                    atualizar_veiculo(host_name, user_name, user_password, database_name)
-
-                elif opcao == 10:
-                    atualizar_atribuicao(host_name, user_name, user_password, database_name)
-
-                elif opcao == 11:
-                    remover_usuario(host_name, user_name, user_password, database_name)
-
-                elif opcao == 12:
-                    remover_veiculo(host_name, user_name, user_password, database_name)
-
-                elif opcao == 13:
-                    remover_atribuicao(host_name, user_name, user_password, database_name)
-        
-                elif opcao == 14:
-                    create_database_for_estacionamento(host_name, user_name, user_password)
-
-                elif opcao == 15:
+                elif option == "3":
+                    create_database_for_estacionamento(host_name, user_name, user_password, database_name)
                     create_tables_for_estacionamento(host_name, user_name, user_password, database_name)
 
-                elif opcao == 16:
+                elif option == "4":
                     break
+
+                else:
+                    print("Opção inválida!")
+                    continue            
+
             
             
     except Error as e:

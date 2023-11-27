@@ -192,6 +192,11 @@ class gerencia_veiculos():
         result = self.connection.select_from_table(query)
         return result
     
+    def read_codigo_de_barra(self, placa_veiculo):
+        query = f"""SELECT dono_do_veiculo FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
+        result = self.connection.execute_read_query(query)
+        return result[0][0]
+    
     def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
         query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}', estacionamento_id_estacionamento = '{id_estacionamento}'
                     WHERE placa_veiculo = '{placa_veiculo}'"""
