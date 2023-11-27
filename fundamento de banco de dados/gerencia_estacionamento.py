@@ -32,20 +32,18 @@ class connect_sql():
         return connection
     
     def execute_query(self, query):
-        cursor = self.cursor()
         try:
-            cursor.execute(query)
-            self.commit()
+            self.cursor.execute(query)
+            self.connection.commit()
             print("Query successful")
         except Error as err:
             print(f"Error: '{err}'")
     
     def execute_read_query(self, query):
-        cursor = self.cursor()
         result = None
         try:
-            cursor.execute(query)
-            result = cursor.fetchall()
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
             return result
         except Error as err:
             print(f"Error: '{err}'")
@@ -57,16 +55,15 @@ class connect_sql():
             print("MySQL connection is closed")
             
     def insert_into_table(self, query):
-        cursor = self.connection.cursor()
         try:
-            cursor.execute(query)
+            self.cursor.execute(query)
             self.connection.commit()
             print("Insert into table successfully")
         except Error as err:
             print(f"Error: '{err}'")
             
     def select_from_table(self, query):
-        cursor = self.cursor()
+        cursor = self.cursor
         try:
             cursor.execute(query)
             result = cursor.fetchall()
@@ -75,7 +72,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def delete_from_table(self, query):
-        cursor = self.connection.cursor()
+        cursor = self.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -84,7 +81,7 @@ class connect_sql():
             print(f"Error: '{err}'")
             
     def update_table(self, query):
-        cursor = self.connection.cursor()
+        cursor = self.cursor
         try:
             cursor.execute(query)
             self.connection.commit()
@@ -112,9 +109,12 @@ class gerencia_atribuicao():
     
     def get_atribuicao(self, nome_atribuicao):
         query = f"""SELECT id_atribuicao FROM atribuicao 
-                    WHERE nome_atribuicao = '{nome_atribuicao}'"""
-        result = self.connection.select_from_table(query)
-        return result
+                WHERE nome_atribuicao = '{nome_atribuicao}'"""
+        result = self.connection.execute_read_query(query)
+        if result:
+            return result[0][0]  # Acessa o primeiro elemento da primeira tupla
+        else:
+            return None  # ou outra indicação de valor não encontrado, se desejado
     
     def update_atribuicao(self, nome_atribuicao, id_atribuicao):
         query = f"""UPDATE atribuicao SET nome_atribuicao = '{nome_atribuicao}'
@@ -149,7 +149,7 @@ class gerencia_usuarios():
     
     def get_codigos_de_barra(self):
         query = f"""SELECT codigo_de_barra FROM usuario"""
-        result = self.connection.select_from_table(query)
+        result = self.connection.execute_read_query(query)
         
         codigo_gerado = random.randint(100000000000, 999999999999)
         
@@ -179,9 +179,12 @@ class gerencia_veiculos():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono):
-        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, marca_veiculo, ano_veiculo, codigo_de_barra)
-                    VALUES ('{placa_veiculo}', '{modelo_veiculo}', '{codigo_de_barra_dono}')"""
+    def criar_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
+        query = f"""INSERT INTO veiculo (placa_veiculo, modelo_veiculo, dono_do_veiculo, estacionamento_id_estacionamento)
+                    VALUES ('{placa_veiculo}', '{modelo_veiculo}', '{codigo_de_barra_dono}', '{id_estacionamento}')"""
+        self.connection.insert_into_table(query)
+        query = f"""INSERT INTO estac_veic (veiculo_placa_veiculo, estacionamentos_id_estacionamento)
+                    VALUES ('{placa_veiculo}', '{id_estacionamento}')"""
         self.connection.insert_into_table(query)
         
     def read_veiculos(self):
@@ -189,14 +192,23 @@ class gerencia_veiculos():
         result = self.connection.select_from_table(query)
         return result
     
-    def update_veiculo(self, placa_veiculo, modelo_veiculo, codigo_de_barra_dono):
-        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', codigo_de_barra = '{codigo_de_barra_dono}'
+    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
+        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}', estacionamento_id_estacionamento = '{id_estacionamento}'
                     WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
+        query = f"""UPDATE estac_veic SET estacionamentos_id_estacionamento = '{id_estacionamento}', veiculo_placa_veiculo = '{nova_placa}'
+                    WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
+        self.connection.update_table(query)
+
+
         
     def deletar_veiculo(self, placa_veiculo):
-        query = f"""DELETE FROM veiculo WHERE codigo_de_barra = '{placa_veiculo}'"""
+        query = f"""DELETE FROM estac_veic WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
         self.connection.delete_from_table(query)
+        
+        query = f"""DELETE FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
+        self.connection.delete_from_table(query)
+        
         
     def close_connection(self):
         self.connection.close_connection()
@@ -210,23 +222,23 @@ class gerencia_estacionamento():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_estacionamento(self, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""INSERT INTO estacionamento (id_estacionamento, nome_estacionamento, endereco_estacionamento, vagas_estacionamento)
-                    VALUES ('{id_estacionamento}', '{placa_veiculo}', '{modelo_veiculo}', '{dono_do_veiculo}')"""
+    def criar_estacionamento(self, id_estacionamento):
+        query = f"""INSERT INTO estacionamentos (id_estacionamento)
+                    VALUES ('{id_estacionamento}')"""
         self.connection.insert_into_table(query)
         
     def read_estacionamento(self):
-        query = f"""SELECT * FROM estacionamento"""
+        query = f"""SELECT * FROM estacionamentos"""
         result = self.connection.select_from_table(query)
         return result
     
-    def update_estacionamento(self, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""UPDATE estacionamento SET nome_estacionamento = '{placa_veiculo}', endereco_estacionamento = '{modelo_veiculo}', vagas_estacionamento = '{dono_do_veiculo}'
+    def update_estacionamento(self, id_estacionamento, novo_id):
+        query = f"""UPDATE estacionamentos SET id_estacionamento = '{novo_id}'
                     WHERE id_estacionamento = '{id_estacionamento}'"""
         self.connection.update_table(query)
         
     def deletar_estacionamento(self, id_estacionamento):
-        query = f"""DELETE FROM estacionamento WHERE id_estacionamento = '{id_estacionamento}'"""
+        query = f"""DELETE FROM estacionamentos WHERE id_estacionamento = '{id_estacionamento}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):
