@@ -23,6 +23,15 @@ class gerencia_estacionamento():
         result = self.connection.select_from_table(query)
         return result
     
+    def get_estacionamento(self, id_estacionamento):
+        query = f"""SELECT nome_estacionamento FROM estacionamentos 
+                WHERE id_estacionamento = '{id_estacionamento}'"""
+        result = self.connection.execute_read_query(query)
+        if result:
+            return result[0][0]  
+        else:
+            return None
+    
     def update_estacionamento(self, nome_estacionamento):
         query = f"""UPDATE estacionamentos SET nome_estacionamento = '{nome_estacionamento}'"""
         self.connection.update_table(query)

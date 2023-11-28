@@ -7,7 +7,7 @@ from gerencia_estacionamento import *
 from gerencia_atribuicao import *
 from gerencia_veiculos import *
 from gerencia_usuarios import *
-from gerencia_estac_veic import *
+from gerencia_veiculo_estacionado import *
 from gerencia_historico import *
 
 # REFACTORING: Extract Method
@@ -38,7 +38,7 @@ def entrada_veiculo(host_name, user_name, user_password, database_name):
                 print("Opção inválida!")
                 continue
 
-        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora_entrada)
+        gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).criar_veiculo_estacionado(placa, codigo_de_barra, id_estacionamento, data_hora_entrada)
         print("Entrada realizada com sucesso!")
 
     else:
@@ -47,9 +47,11 @@ def entrada_veiculo(host_name, user_name, user_password, database_name):
 
 def saida_veiculo(host_name, user_name, user_password, database_name):
     codigo_de_barra = input("Digite o código de barra do usuário: ")
-    placa = gerencia_estac_veic(host_name, user_name, user_password, database_name).read_estac_veic_especifico(codigo_de_barra)
-    data_hora_entrada = gerencia_estac_veic(host_name, user_name, user_password, database_name).read_data_hora_entrada(placa)
-    
+    placa = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).read_placa(codigo_de_barra)
+    data_hora_entrada = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).read_data_entrada(placa)
+    id_estacionamento = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).get_id_estacionamento(placa)
+
+
     while True:
         option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
         if option == "S":
@@ -64,8 +66,8 @@ def saida_veiculo(host_name, user_name, user_password, database_name):
             print("Opção inválida!")
             continue
         
-    gerencia_historico(host_name, user_name, user_password, database_name).criar_historico(placa, data_hora_entrada, data_hora_saida)
-    gerencia_estac_veic(host_name, user_name, user_password, database_name).deletar_estac_veic(placa)
+    gerencia_historico(host_name, user_name, user_password, database_name).criar_historico(placa, id_estacionamento, data_hora_entrada, data_hora_saida)
+    gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).deletar_veiculo_estacionado(placa)
     
     print("Saída realizada com sucesso!") 
     
@@ -264,11 +266,7 @@ def adicionar_usuario(host_name, user_name, user_password, database_name, return
     atribuicao = input("Digite o nome da atribuição do usuário: ")
     codigo_de_barra = gerencia_usuarios(host_name, user_name, user_password, database_name).get_codigos_de_barra()
     atribuicao = gerencia_atribuicao(host_name, user_name, user_password, database_name).get_atribuicao(atribuicao)
-    
-    while atribuicao == None:
-        print("Atribuição inválida!")
-        atribuicao = input("Digite o nome da atribuição do usuário: ") 
-        atribuicao = gerencia_atribuicao(host_name, user_name, user_password, database_name).get_atribuicao(atribuicao)  
+    atribuicao = verificacao(atribuicao,"atribuicao")
     
     gerencia_usuarios(host_name, user_name, user_password, database_name).criar_usuario(nome, atribuicao, codigo_de_barra)
     
@@ -286,25 +284,64 @@ def adicionar_veiculo(host_name, user_name, user_password, database_name):
     modelo = input("Digite o modelo do veículo: ").capitalize()
     usuario = input("Digite o codigo do dono: ")
     verificacao_usuario = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
+    verificacao_usuario = verificacao(verificacao_usuario,"veiculo")
     
-    while verificacao_usuario == None:
-        print("Usuário não encontrado!")
-        print("1- Digitar novamente o código do dono: ")
-        print("2- Criar um novo usuário")
-        option = input("Digite a opção desejada: ")
-        if option == "1":
-            usuario = input("Digite o codigo do dono: ")
-            verificacao_usuario = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
-        elif option == "2":
-            usuario = adicionar_usuario(host_name, user_name, user_password, database_name, True)
-            verificacao_usuario = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
-    
-    id_estacionamento = input("Digite o id do estacionamento: ")
-    verificacao_usuario #TO DO
-    
-    gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario, id_estacionamento)
+    gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario)
     
     print("Veículo adicionado com sucesso!")
+
+
+def verificacao(verifica, tipo):
+    if tipo == "usuario":
+        codigo_de_barra = input("Digite o código de barra do usuário: ")
+        verificacao_codigo = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(codigo_de_barra)
+        
+        while verificacao_codigo == None:
+            print("Usuário não encontrado!")
+            codigo_de_barra = input("Digite o código de barra do usuário: ")
+            verificacao_codigo = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(codigo_de_barra)
+        
+        return codigo_de_barra
+    
+    elif tipo == "veiculo":
+        
+        while verifica == None:
+            print("Usuário não encontrado!")
+            print("1- Digitar novamente o código do dono: ")
+            print("2- Criar um novo usuário")
+            option = input("Digite a opção desejada: ")
+            if option == "1":
+                usuario = input("Digite o codigo do dono: ")
+                verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
+            elif option == "2":
+                usuario = adicionar_usuario(host_name, user_name, user_password, database_name, True)
+                verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
+        
+        return verifica
+    
+    elif tipo == "atribuicao":
+        
+        while verifica == None:
+            print("Atribuição não encontrada!")
+            atribuicao = input("Digite o nome da atribuição: ").capitalize()
+            verifica = gerencia_atribuicao(host_name, user_name, user_password, database_name).get_atribuicao(atribuicao)
+        
+        return verifica
+    
+    elif tipo == "estacionamento":
+        
+        while verifica == None:
+            print("Estacionamento não encontrado!")
+            id_estacionamento = input("Digite o id do estacionamento: ")
+            verifica = gerencia_estacionamento(host_name, user_name, user_password, database_name).get_estacionamento(id_estacionamento)
+        
+        return verifica
+    
+
+
+
+
+
 
 def adicionar_estacionamento(host_name, user_name, user_password, database_name):
     nome_estacionamento = input("Digite o nome do estacionamento: ")

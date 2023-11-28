@@ -8,9 +8,9 @@ class gerencia_historico():
         self.database_name = database_name
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
-    def criar_historico(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida):
-        query = f"""INSERT INTO historico (veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida)
-                    VALUES ('{veiculo_placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_hora_entrada}', '{data_hora_saida}')"""
+    def criar_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
+        query = f"""INSERT INTO historico (placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida)
+                    VALUES ('{placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_entrada}', '{data_saida}')"""
         self.connection.insert_into_table(query)
         
     def read_historico(self):
@@ -18,13 +18,13 @@ class gerencia_historico():
         result = self.connection.select_from_table(query)
         return result
     
-    def update_historico(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida):
-        query = f"""UPDATE historico SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}', data_hora_entrada = '{data_hora_entrada}', data_hora_saida = '{data_hora_saida}'
-                    WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
+    def update_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
+        query = f"""UPDATE historico SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}', data_entrada = '{data_entrada}', data_saida = '{data_saida}'
+                    WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
         
-    def deletar_historico(self, veiculo_placa_veiculo):
-        query = f"""DELETE FROM historico WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
+    def deletar_historico(self, placa_veiculo):
+        query = f"""DELETE FROM historico WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):
