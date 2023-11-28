@@ -1,15 +1,22 @@
 import mysql.connector
-import time
+from datetime import datetime
 import random
 from mysql.connector import Error
-from criar_sql import *
+from create_database_for_estacionamento import *
+from create_tables_for_estacionamento import *
 from gerencia_estacionamento import *
+from gerencia_atribuicao import *
+from gerencia_veiculos import *
+from gerencia_usuarios import *
+from gerencia_estac_veic import *
+
+# REFACTORING: Extract Method
+# TO DO: Extract Method
 
 host_name = "localhost"
 user_name = "root"
 user_password = "123456"
-lista = []
-
+database_name = "estacionamento"
 
 def entrada_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
@@ -20,17 +27,15 @@ def entrada_veiculo(host_name, user_name, user_password, database_name):
         while True:
             option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
             if option == "S":
-                data = time.strftime("%d/%m/%Y")
-                hora = time.strftime("%H:%M:%S")
-                data_hora = data + " " + hora
+                data_hora_entrada = datetime.now()
                 break
             elif option == "N":
                 data = input("Digite a data: ")
                 hora = input("Digite a hora: ")
-                data_hora = data + " " + hora
+                data_hora_entrada = data + " " + hora
                 break
 
-        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora)
+        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora_entrada)
         print("Entrada realizada com sucesso!")
 
     else:
@@ -49,17 +54,15 @@ def saida_veiculo(host_name, user_name, user_password, database_name):
         while True:
             option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
             if option == "S":
-                data = time.strftime("%d/%m/%Y")
-                hora = time.strftime("%H:%M:%S")
-                data_hora = data + " " + hora
+                data_hora_saida = datetime.now()
                 break
             elif option == "N":
                 data = input("Digite a data: ")
                 hora = input("Digite a hora: ")
-                data_hora = data + " " + hora
+                data_hora_saida = data + " " + hora
                 break
 
-        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora_entrada, data_hora)
+        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora_entrada, data_hora_saida)
 
     else:
         print("Usuário não possui esse veículo!")
@@ -149,7 +152,6 @@ def menu_usuarios(host_name, user_name, user_password, database_name):
             continue
 
 
-
 def menu_veiculos(host_name, user_name, user_password, database_name):
     while True:
         print("1 - Adicionar veículo")
@@ -214,7 +216,6 @@ def menu_atribuicao(host_name, user_name, user_password, database_name):
             continue
 
 
-
 def menu_estacionamento(host_name, user_name, user_password, database_name):
     while True:
         print("1 - Adicionar estacionamento")
@@ -245,9 +246,6 @@ def menu_estacionamento(host_name, user_name, user_password, database_name):
         else:
             print("Opção inválida!")
             continue
-
-
-
 
 
 def adicionar_atribuicao(host_name, user_name, user_password, database_name):
@@ -294,6 +292,7 @@ def atualizar_usuario(host_name, user_name, user_password, database_name):
     
     print("Usuário atualizado com sucesso!")
 
+
 def atualizar_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo que quer atualizar: ").upper()
     modelo = input("Digite o novo modelo do veículo: ").capitalize()
@@ -304,12 +303,14 @@ def atualizar_veiculo(host_name, user_name, user_password, database_name):
     
     print("Veículo atualizado com sucesso!")
 
+
 def atualizar_atribuicao(host_name, user_name, user_password, database_name):
     id_atribuicao = input("Digite o id da atribuição que quer atualizar: ")
     nome_atribuicao = input("Digite o novo nome da atribuição: ").capitalize()
     gerencia_atribuicao(host_name, user_name, user_password, database_name).update_atribuicao(nome_atribuicao, id_atribuicao)
     
     print("Atribuição atualizada com sucesso!")
+
 
 def atualizar_estacionamento(host_name, user_name, user_password, database_name):
     id_estacionamento = input("Digite o id do estacionamento que quer atualizar: ")
@@ -333,11 +334,13 @@ def remover_veiculo(host_name, user_name, user_password, database_name):
     
     print("Veículo removido com sucesso!")
 
+
 def remover_atribuicao(host_name, user_name, user_password, database_name):
     id_atribuicao = input("Digite o id da atribuição que quer remover: ")
     gerencia_atribuicao(host_name, user_name, user_password, database_name).deletar_atribuicao(id_atribuicao)
     
     print("Atribuição removida com sucesso!")
+
 
 def remover_estacionamento(host_name, user_name, user_password, database_name):
     id_estacionamento = input("Digite o id do estacionamento que quer remover: ")
