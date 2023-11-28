@@ -47,6 +47,8 @@ def entrada_veiculo(host_name, user_name, user_password, database_name):
 
 def saida_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
+
+
     data_hora_entrada = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).read_data_entrada(placa)
     id_estacionamento = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).get_id_estacionamento(placa)
 
@@ -66,6 +68,8 @@ def saida_veiculo(host_name, user_name, user_password, database_name):
             continue
         
     gerencia_historico(host_name, user_name, user_password, database_name).update_historico(placa, id_estacionamento, data_hora_entrada, data_hora_saida)
+
+
     gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).deletar_veiculo_estacionado(placa)
     
     print("Saída realizada com sucesso!") 
@@ -282,6 +286,7 @@ def adicionar_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
     modelo = input("Digite o modelo do veículo: ").capitalize()
     usuario = input("Digite o codigo do dono: ")
+
     verificacao_usuario = verificacao(verificacao_usuario,"veiculo")
     
     gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario)
@@ -304,6 +309,7 @@ def verificacao(verifica, tipo):
     elif tipo == "veiculo":
         
         verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(verifica)
+
         while verifica == None:
             print("Usuário não encontrado!")
             print("1- Digitar novamente o código do dono: ")
@@ -320,7 +326,7 @@ def verificacao(verifica, tipo):
     
     elif tipo == "atribuicao":
         
-        verifica = gerencia_atribuicao(host_name, user_name, user_password, database_name).get_atribuicao(verifica)
+
         while verifica == None:
             print("Atribuição não encontrada!")
             atribuicao = input("Digite o nome da atribuição: ").capitalize()
@@ -330,7 +336,7 @@ def verificacao(verifica, tipo):
     
     elif tipo == "estacionamento":
         
-        verifica = gerencia_estacionamento(host_name, user_name, user_password, database_name).get_estacionamento(verifica)
+
         while verifica == None:
             print("Estacionamento não encontrado!")
             id_estacionamento = input("Digite o id do estacionamento: ")
@@ -347,6 +353,7 @@ def verificacao(verifica, tipo):
             verifica = gerencia_veiculos(host_name, user_name, user_password, database_name).get_placa(placa)
         
         return verifica
+
 
 
 
@@ -489,6 +496,7 @@ def main():
                 print("Erro ao conectar ao banco de dados MySQL", e)
                 
             
+
             if connection.is_connected():
                 print('Conectado ao banco de dados MySQL')
                 

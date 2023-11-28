@@ -23,6 +23,7 @@ class gerencia_veiculos():
         result = self.connection.execute_read_query(query)
         return result[0][0]
     
+
     def read_codigo_de_barra(self, placa_veiculo):
         query = f"""SELECT dono_do_veiculo FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
         result = self.connection.execute_read_query(query)
@@ -34,11 +35,13 @@ class gerencia_veiculos():
         self.connection.update_table(query)
         query = f"""UPDATE veiculo_estacionado SET placa_veiculo_estacionado = '{nova_placa}'
                     WHERE placa_veiculo_estacionado = '{placa_veiculo}'"""
+
         self.connection.update_table(query)
 
         
     def deletar_veiculo(self, placa_veiculo):
         query = f"""DELETE FROM veiculo_estacionado WHERE placa_veiculo_estacionado = '{placa_veiculo}'"""
+
         self.connection.delete_from_table(query)
         
         query = f"""DELETE FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
