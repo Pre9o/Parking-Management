@@ -18,22 +18,27 @@ class gerencia_veiculos():
         result = self.connection.select_from_table(query)
         return result
     
+    def get_placa(self, placa_veiculo):
+        query = f"""SELECT placa_veiculo FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
+        result = self.connection.execute_read_query(query)
+        return result[0][0]
+    
     def read_codigo_de_barra(self, placa_veiculo):
         query = f"""SELECT dono_do_veiculo FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
         result = self.connection.execute_read_query(query)
         return result[0][0]
     
-    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono, id_estacionamento):
-        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}', estacionamento_id_estacionamento = '{id_estacionamento}'
+    def update_veiculo(self, placa_veiculo, nova_placa,modelo_veiculo, codigo_de_barra_dono):
+        query = f"""UPDATE veiculo SET modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{codigo_de_barra_dono}', placa_veiculo = '{nova_placa}'
                     WHERE placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
-        query = f"""UPDATE veiculo_estacionado SET estacionamentos_id_estacionamento = '{id_estacionamento}', veiculo_placa_veiculo = '{nova_placa}'
-                    WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
+        query = f"""UPDATE veiculo_estacionado SET placa_veiculo_estacionado = '{nova_placa}'
+                    WHERE placa_veiculo_estacionado = '{placa_veiculo}'"""
         self.connection.update_table(query)
 
         
     def deletar_veiculo(self, placa_veiculo):
-        query = f"""DELETE FROM veiculo_estacionado WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
+        query = f"""DELETE FROM veiculo_estacionado WHERE placa_veiculo_estacionado = '{placa_veiculo}'"""
         self.connection.delete_from_table(query)
         
         query = f"""DELETE FROM veiculo WHERE placa_veiculo = '{placa_veiculo}'"""
