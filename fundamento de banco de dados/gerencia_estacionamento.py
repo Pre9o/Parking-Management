@@ -232,9 +232,23 @@ class gerencia_estacionamento():
         result = self.connection.select_from_table(query)
         return result
     
+<<<<<<< Updated upstream
     def update_estacionamento(self, id_estacionamento, novo_id):
         query = f"""UPDATE estacionamentos SET id_estacionamento = '{novo_id}'
                     WHERE id_estacionamento = '{id_estacionamento}'"""
+=======
+    def get_estacionamento(self, id_estacionamento):
+        query = f"""SELECT id_estacionamento FROM estacionamentos 
+                WHERE id_estacionamento = '{id_estacionamento}'"""
+        result = self.connection.execute_read_query(query)
+        if result:
+            return result[0][0]  
+        else:
+            return None
+    
+    def update_estacionamento(self, nome_estacionamento):
+        query = f"""UPDATE estacionamentos SET nome_estacionamento = '{nome_estacionamento}'"""
+>>>>>>> Stashed changes
         self.connection.update_table(query)
         
     def deletar_estacionamento(self, id_estacionamento):
