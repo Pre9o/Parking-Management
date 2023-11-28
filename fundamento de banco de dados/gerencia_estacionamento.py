@@ -205,7 +205,6 @@ class gerencia_veiculos():
                     WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
         self.connection.update_table(query)
 
-
         
     def deletar_veiculo(self, placa_veiculo):
         query = f"""DELETE FROM estac_veic WHERE veiculo_placa_veiculo = '{placa_veiculo}'"""
@@ -227,9 +226,9 @@ class gerencia_estacionamento():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_estacionamento(self, id_estacionamento):
-        query = f"""INSERT INTO estacionamentos (id_estacionamento)
-                    VALUES ('{id_estacionamento}')"""
+    def criar_estacionamento(self, id_estacionamento, nome_estacionamento):
+        query = f"""INSERT INTO estacionamentos (id_estacionamento, nome_estacionamento)
+                    VALUES ('{id_estacionamento}', '{nome_estacionamento}')"""
         self.connection.insert_into_table(query)
         
     def read_estacionamento(self):
@@ -237,13 +236,48 @@ class gerencia_estacionamento():
         result = self.connection.select_from_table(query)
         return result
     
-    def update_estacionamento(self, id_estacionamento, novo_id):
-        query = f"""UPDATE estacionamentos SET id_estacionamento = '{novo_id}'
+    def update_estacionamento(self, id_estacionamento, nome_estacionamento):
+        query = f"""UPDATE estacionamentos SET nome_estacionamento = '{nome_estacionamento}'
                     WHERE id_estacionamento = '{id_estacionamento}'"""
         self.connection.update_table(query)
         
     def deletar_estacionamento(self, id_estacionamento):
         query = f"""DELETE FROM estacionamentos WHERE id_estacionamento = '{id_estacionamento}'"""
+        self.connection.delete_from_table(query)
+        
+    def close_connection(self):
+        self.connection.close_connection()
+
+class gerencia_estac_veic():
+    def __init__(self, host_name, user_name, user_password, database_name):
+        self.host_name = host_name
+        self.user_name = user_name
+        self.user_password = user_password
+        self.database_name = database_name
+        self.connection = connect_sql(host_name, user_name, user_password, database_name)
+        
+    def criar_estac_veic(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada):
+        query = f"""INSERT INTO estac_veic (veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada)
+                    VALUES ('{veiculo_placa_veiculo}', '{estacionamentos_id_estacionamento}, '{data_hora_entrada}')"""
+        self.connection.insert_into_table(query)
+        
+    def read_estac_veic(self):
+        query = f"""SELECT * FROM estac_veic"""
+        result = self.connection.select_from_table(query)
+        return result
+    
+    def read_data_hora_entrada(self, veiculo_placa_veiculo):
+        query = f"""SELECT data_hora_entrada FROM estac_veic WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
+        result = self.connection.execute_read_query(query)
+        return result[0][0]
+    
+    def update_estac_veic(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento):
+        query = f"""UPDATE estac_veic SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}'
+                    WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
+        self.connection.update_table(query)
+        
+    def deletar_estac_veic(self, veiculo_placa_veiculo):
+        query = f"""DELETE FROM estac_veic WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):
@@ -258,9 +292,9 @@ class gerencia_historico():
         self.database_name = database_name
         self.connection = connect_sql(host_name, user_name, user_password, database_name)
         
-    def criar_historico(self, id_historico, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""INSERT INTO historico (id_historico, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo)
-                    VALUES ('{id_historico}', '{id_estacionamento}', '{placa_veiculo}', '{modelo_veiculo}', '{dono_do_veiculo}')"""
+    def criar_historico(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida):
+        query = f"""INSERT INTO historico (veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida)
+                    VALUES ('{veiculo_placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_hora_entrada}', '{data_hora_saida}')"""
         self.connection.insert_into_table(query)
         
     def read_historico(self):
@@ -268,13 +302,13 @@ class gerencia_historico():
         result = self.connection.select_from_table(query)
         return result
     
-    def update_historico(self, id_historico, id_estacionamento, placa_veiculo, modelo_veiculo, dono_do_veiculo):
-        query = f"""UPDATE historico SET id_estacionamento = '{id_estacionamento}', placa_veiculo = '{placa_veiculo}', modelo_veiculo = '{modelo_veiculo}', dono_do_veiculo = '{dono_do_veiculo}'
-                    WHERE id_historico = '{id_historico}'"""
+    def update_historico(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada, data_hora_saida):
+        query = f"""UPDATE historico SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}', data_hora_entrada = '{data_hora_entrada}', data_hora_saida = '{data_hora_saida}'
+                    WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
         self.connection.update_table(query)
         
-    def deletar_historico(self, id_historico):
-        query = f"""DELETE FROM historico WHERE id_historico = '{id_historico}'"""
+    def deletar_historico(self, veiculo_placa_veiculo):
+        query = f"""DELETE FROM historico WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
         self.connection.delete_from_table(query)
         
     def close_connection(self):

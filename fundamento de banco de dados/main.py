@@ -1,4 +1,5 @@
 import mysql.connector
+import time
 import random
 from mysql.connector import Error
 from criar_sql import *
@@ -16,13 +17,52 @@ def entrada_veiculo(host_name, user_name, user_password, database_name):
     codigo_de_barra = input("Digite o código de barra do usuário: ")
 
     if codigo_de_barra == gerencia_veiculos(host_name, user_name, user_password, database_name).read_codigo_de_barra(placa):
-        gerencia_estacionamento(host_name, user_name, user_password, database_name).entrada_veiculo(placa, id_estacionamento)
+        while True:
+            option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
+            if option == "S":
+                data = time.strftime("%d/%m/%Y")
+                hora = time.strftime("%H:%M:%S")
+                data_hora = data + " " + hora
+                break
+            elif option == "N":
+                data = input("Digite a data: ")
+                hora = input("Digite a hora: ")
+                data_hora = data + " " + hora
+                break
+
+        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora)
         print("Entrada realizada com sucesso!")
 
     else:
-        print("C
-    
-    print("Veículo adicionado com sucesso!")
+        print("Usuário não possui esse veículo!")    
+
+
+def saida_veiculo(host_name, user_name, user_password, database_name):
+    placa = input("Digite a placa do veículo: ").upper()
+    id_estacionamento = input("Digite o id do estacionamento: ")
+    codigo_de_barra = input("Digite o código de barra do usuário: ")
+
+    if codigo_de_barra == gerencia_veiculos(host_name, user_name, user_password, database_name).read_codigo_de_barra(placa):
+        gerencia_estac_veic(host_name, user_name, user_password, database_name).deletar_estac_veic(placa)
+        data_hora_entrada = gerencia_estac_veic(host_name, user_name, user_password, database_name).read_data_hora_entrada(placa)
+
+        while True:
+            option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
+            if option == "S":
+                data = time.strftime("%d/%m/%Y")
+                hora = time.strftime("%H:%M:%S")
+                data_hora = data + " " + hora
+                break
+            elif option == "N":
+                data = input("Digite a data: ")
+                hora = input("Digite a hora: ")
+                data_hora = data + " " + hora
+                break
+
+        gerencia_estac_veic(host_name, user_name, user_password, database_name).criar_estac_veic(placa, id_estacionamento, data_hora_entrada, data_hora)
+
+    else:
+        print("Usuário não possui esse veículo!")
 
 
 def menu_gerenciamento(host_name, user_name, user_password, database_name):
@@ -210,11 +250,6 @@ def menu_estacionamento(host_name, user_name, user_password, database_name):
 
 
 
-
-
-
-
-
 def adicionar_atribuicao(host_name, user_name, user_password, database_name):
     nome_atribuicao = input("Digite o nome da atribuição: ").capitalize()
     id_atribuicao = input("Digite o id da atribuição: ")
@@ -318,6 +353,9 @@ def remover_estacionamento(host_name, user_name, user_password, database_name):
 
 def main():
     try:
+        create_database_for_estacionamento(host_name, user_name, user_password)
+        create_tables_for_estacionamento(host_name, user_name, user_password, database_name)
+
         connection = mysql.connector.connect(host='localhost',
                                              database='estacionamento',
                                              user='root',
@@ -326,7 +364,7 @@ def main():
         if connection.is_connected():
             print('Conectado ao banco de dados MySQL')
 
-            
+                       
 
             while True:
                 print("1 - Menu de gerenciamento")
@@ -340,6 +378,7 @@ def main():
                     menu_gerenciamento(host_name, user_name, user_password, database_name)
 
                 elif option == "2":
+                    menu_vigilante(host_name, user_name, user_password, database_name)
 
                 elif option == "3":
                     create_database_for_estacionamento(host_name, user_name, user_password, database_name)
