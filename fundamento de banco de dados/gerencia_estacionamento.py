@@ -8,9 +8,14 @@ class gerencia_estacionamento():
         self.database_name = database_name
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
-    def criar_estacionamento(self, id_estacionamento, nome_estacionamento):
-        query = f"""INSERT INTO estacionamentos (id_estacionamento, nome_estacionamento)
-                    VALUES ('{id_estacionamento}', '{nome_estacionamento}')"""
+    def criar_estacionamento(self, nome_estacionamento):
+        query = f"""INSERT INTO estacionamentos (nome_estacionamento)
+                    VALUES ('{nome_estacionamento}')"""
+        self.connection.insert_into_table(query)
+        
+    def criar_estacionamentos_padrao(self):
+        query = f"""INSERT INTO estacionamentos (nome_estacionamento)
+                    VALUES ('Estacionamento 1'), ('Estacionamento 2'), ('Estacionamento 3'), ('Estacionamento 4'), ('Estacionamento 5')"""
         self.connection.insert_into_table(query)
         
     def read_estacionamento(self):
@@ -18,9 +23,8 @@ class gerencia_estacionamento():
         result = self.connection.select_from_table(query)
         return result
     
-    def update_estacionamento(self, id_estacionamento, nome_estacionamento):
-        query = f"""UPDATE estacionamentos SET nome_estacionamento = '{nome_estacionamento}'
-                    WHERE id_estacionamento = '{id_estacionamento}'"""
+    def update_estacionamento(self, nome_estacionamento):
+        query = f"""UPDATE estacionamentos SET nome_estacionamento = '{nome_estacionamento}'"""
         self.connection.update_table(query)
         
     def deletar_estacionamento(self, id_estacionamento):

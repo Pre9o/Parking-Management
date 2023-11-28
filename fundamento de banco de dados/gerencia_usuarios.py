@@ -17,7 +17,16 @@ class gerencia_usuarios():
     def read_usuarios(self):
         query = f"""SELECT * FROM usuario"""
         result = self.connection.select_from_table(query)
-        return result
+        return result        
+    
+    def get_usuario(self, codigo_de_barra):
+        query = f"""SELECT nome_usuario FROM usuario 
+                WHERE codigo_de_barra = '{codigo_de_barra}'"""
+        result = self.connection.execute_read_query(query)
+        if result:
+            return result[0][0]  
+        else:
+            return None
     
     def get_codigos_de_barra(self):
         query = f"""SELECT codigo_de_barra FROM usuario"""
@@ -29,6 +38,9 @@ class gerencia_usuarios():
             codigo_gerado = random.randint(100000000000, 999999999999)
         
         return codigo_gerado
+    
+    def get_cartao_especial(self):
+       a = 0
     
     def update_usuario(self, nome_usuario, atribuicao_usuario, codigo_de_barra):
         query = f"""UPDATE usuario SET nome_usuario = '{nome_usuario}', atribuicao_id_atribuicao = '{atribuicao_usuario}'

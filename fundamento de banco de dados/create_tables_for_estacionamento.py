@@ -82,7 +82,7 @@ class create_tables_for_estacionamento():
     def define_table_estacionamentos(self, host_name, user_name, user_password, database_name):
         connection = self.create_server_connection(host_name, user_name, user_password, database_name)
         query = """CREATE TABLE estacionamentos (
-                    id_estacionamento INT NOT NULL,
+                    id_estacionamento INT NOT NULL AUTO_INCREMENT,
                     nome_estacionamento VARCHAR(45) NOT NULL,
                     PRIMARY KEY (id_estacionamento)
                     )"""
@@ -95,10 +95,12 @@ class create_tables_for_estacionamento():
         query = """CREATE TABLE veiculo_estacionado (
                     id_veiculo_estacionado INT NOT NULL AUTO_INCREMENT,
                     placa_veiculo_estacionado VARCHAR(45) NOT NULL,
+                    codigo_de_barra_usuario VARCHAR(45) NOT NULL,
                     estacionamentos_id_estacionamento INT NOT NULL,
                     data_entrada DATETIME NOT NULL,
                     PRIMARY KEY (id_veiculo_estacionado),
                     FOREIGN KEY (placa_veiculo_estacionado) REFERENCES veiculo (placa_veiculo),
+                    FOREIGN KEY (codigo_de_barra_usuario) REFERENCES usuario (codigo_de_barra),
                     FOREIGN KEY (estacionamentos_id_estacionamento) REFERENCES estacionamentos (id_estacionamento)
                     )"""
         

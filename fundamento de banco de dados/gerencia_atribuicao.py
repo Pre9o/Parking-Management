@@ -13,6 +13,11 @@ class gerencia_atribuicao():
                     VALUES ('{id_atribuicao}', '{nome_atribuicao}')"""
         self.connection.insert_into_table(query)
         
+    def criar_atribuicoes_padrao(self):
+        query = f"""INSERT INTO atribuicao (id_atribuicao, nome_atribuicao)
+                    VALUES ('1', 'Professor'), ('2', 'Aluno'), ('3', 'Funcionário'), ('4', 'Visitante')"""
+        self.connection.insert_into_table(query)
+        
     def read_atribuicao(self):
         query = f"""SELECT * FROM atribuicao"""
         result = self.connection.select_from_table(query)
@@ -23,9 +28,9 @@ class gerencia_atribuicao():
                 WHERE nome_atribuicao = '{nome_atribuicao}'"""
         result = self.connection.execute_read_query(query)
         if result:
-            return result[0][0]  # Acessa o primeiro elemento da primeira tupla
+            return result[0][0]  
         else:
-            return None  # ou outra indicação de valor não encontrado, se desejado
+            return None  
     
     def update_atribuicao(self, nome_atribuicao, id_atribuicao):
         query = f"""UPDATE atribuicao SET nome_atribuicao = '{nome_atribuicao}'

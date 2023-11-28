@@ -8,15 +8,20 @@ class gerencia_estac_veic():
         self.database_name = database_name
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
-    def criar_estac_veic(self, veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada):
-        query = f"""INSERT INTO estac_veic (veiculo_placa_veiculo, estacionamentos_id_estacionamento, data_hora_entrada)
-                    VALUES ('{veiculo_placa_veiculo}', '{estacionamentos_id_estacionamento}, '{data_hora_entrada}')"""
+    def criar_estac_veic(self, veiculo_placa_veiculo, codigo_de_barra_usuario, estacionamentos_id_estacionamento, data_hora_entrada):
+        query = f"""INSERT INTO estac_veic (veiculo_placa_veiculo, codigo_de_barra_usuario ,estacionamentos_id_estacionamento, data_hora_entrada)
+                    VALUES ('{veiculo_placa_veiculo}', '{codigo_de_barra_usuario}' ,'{estacionamentos_id_estacionamento}', '{data_hora_entrada}')"""
         self.connection.insert_into_table(query)
         
     def read_estac_veic(self):
         query = f"""SELECT * FROM estac_veic"""
         result = self.connection.select_from_table(query)
         return result
+    
+    def read_estac_veic_especifico(self, codigo_de_barra_usuario):
+        query = f"""SELECT * FROM estac_veic WHERE codigo_de_barra_usuario = '{codigo_de_barra_usuario}'"""
+        result = self.connection.select_from_table(query)
+        return result[0][1]
     
     def read_data_hora_entrada(self, veiculo_placa_veiculo):
         query = f"""SELECT data_hora_entrada FROM estac_veic WHERE veiculo_placa_veiculo = '{veiculo_placa_veiculo}'"""
