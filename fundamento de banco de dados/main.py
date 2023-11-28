@@ -20,34 +20,35 @@ database_name = "estacionamento"
 
 def entrada_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
+    placa = verificacao(placa,"placa")
     id_estacionamento = input("Digite o id do estacionamento: ")
-    codigo_de_barra = input("Digite o código de barra do usuário: ")
+    codigo_de_barra = gerencia_veiculos(host_name, user_name, user_password, database_name).read_codigo_de_barra(placa)
 
-    if codigo_de_barra == gerencia_veiculos(host_name, user_name, user_password, database_name).read_codigo_de_barra(placa):
-        while True:
-            option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
-            if option == "S":
-                data_hora_entrada = datetime.now()
-                break
-            elif option == "N":
-                data = input("Digite a data: ")
-                hora = input("Digite a hora: ")
-                data_hora_entrada = data + " " + hora
-                break
-            else:
-                print("Opção inválida!")
-                continue
+    while True:
+        option = input("Quer utilizar a data e hora atual? (S/N): ").upper()
+        if option == "S":
+            data_hora_entrada = datetime.now()
+            break
+        elif option == "N":
+            data = input("Digite a data: ")
+            hora = input("Digite a hora: ")
+            data_hora_entrada = data + " " + hora
+            break
+        else:
+            print("Opção inválida!")
+            continue
 
-        gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).criar_veiculo_estacionado(placa, codigo_de_barra, id_estacionamento, data_hora_entrada)
-        print("Entrada realizada com sucesso!")
+    gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).criar_veiculo_estacionado(placa, codigo_de_barra, id_estacionamento, data_hora_entrada)
+    gerencia_historico(host_name, user_name, user_password, database_name).criar_historico(placa, id_estacionamento, data_hora_entrada, None)
+    print("Entrada realizada com sucesso!")
 
-    else:
-        print("Usuário não possui esse veículo!")    
+       
 
 
 def saida_veiculo(host_name, user_name, user_password, database_name):
-    codigo_de_barra = input("Digite o código de barra do usuário: ")
-    placa = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).read_placa(codigo_de_barra)
+    placa = input("Digite a placa do veículo: ").upper()
+
+
     data_hora_entrada = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).read_data_entrada(placa)
     id_estacionamento = gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).get_id_estacionamento(placa)
 
@@ -66,7 +67,9 @@ def saida_veiculo(host_name, user_name, user_password, database_name):
             print("Opção inválida!")
             continue
         
-    gerencia_historico(host_name, user_name, user_password, database_name).criar_historico(placa, id_estacionamento, data_hora_entrada, data_hora_saida)
+    gerencia_historico(host_name, user_name, user_password, database_name).update_historico(placa, id_estacionamento, data_hora_entrada, data_hora_saida)
+
+
     gerencia_veiculo_estacionado(host_name, user_name, user_password, database_name).deletar_veiculo_estacionado(placa)
     
     print("Saída realizada com sucesso!") 
@@ -283,7 +286,7 @@ def adicionar_veiculo(host_name, user_name, user_password, database_name):
     placa = input("Digite a placa do veículo: ").upper()
     modelo = input("Digite o modelo do veículo: ").capitalize()
     usuario = input("Digite o codigo do dono: ")
-    verificacao_usuario = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(usuario)
+
     verificacao_usuario = verificacao(verificacao_usuario,"veiculo")
     
     gerencia_veiculos(host_name, user_name, user_password, database_name).criar_veiculo(placa, modelo, usuario)
@@ -293,18 +296,20 @@ def adicionar_veiculo(host_name, user_name, user_password, database_name):
 
 def verificacao(verifica, tipo):
     if tipo == "usuario":
-        codigo_de_barra = input("Digite o código de barra do usuário: ")
-        verificacao_codigo = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(codigo_de_barra)
+
+        verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(verifica)
         
-        while verificacao_codigo == None:
+        while verifica == None:
             print("Usuário não encontrado!")
-            codigo_de_barra = input("Digite o código de barra do usuário: ")
-            verificacao_codigo = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(codigo_de_barra)
+            verifica = input("Digite o código de barra do usuário: ")
+            verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(verifica)
         
-        return codigo_de_barra
+        return verifica
     
     elif tipo == "veiculo":
         
+        verifica = gerencia_usuarios(host_name, user_name, user_password, database_name).get_usuario(verifica)
+
         while verifica == None:
             print("Usuário não encontrado!")
             print("1- Digitar novamente o código do dono: ")
@@ -321,6 +326,7 @@ def verificacao(verifica, tipo):
     
     elif tipo == "atribuicao":
         
+
         while verifica == None:
             print("Atribuição não encontrada!")
             atribuicao = input("Digite o nome da atribuição: ").capitalize()
@@ -330,6 +336,7 @@ def verificacao(verifica, tipo):
     
     elif tipo == "estacionamento":
         
+
         while verifica == None:
             print("Estacionamento não encontrado!")
             id_estacionamento = input("Digite o id do estacionamento: ")
@@ -337,6 +344,16 @@ def verificacao(verifica, tipo):
         
         return verifica
     
+    elif tipo == "placa":
+
+        verifica = gerencia_veiculos(host_name, user_name, user_password, database_name).get_placa(verifica)
+        while verifica == None:
+            print("Veículo não encontrado!")
+            placa = input("Digite a placa do veículo: ").upper()
+            verifica = gerencia_veiculos(host_name, user_name, user_password, database_name).get_placa(placa)
+        
+        return verifica
+
 
 
 
@@ -379,8 +396,7 @@ def atualizar_veiculo(host_name, user_name, user_password, database_name):
     modelo = input("Digite o novo modelo do veículo: ").capitalize()
     dono_do_veiculo = input("Digite o novo dono do veículo: ").capitalize()
     nova_placa = input("Digite a nova placa do veículo: ").upper()
-    id_estacionamento = input("Digite o novo id do estacionamento: ")
-    gerencia_veiculos(host_name, user_name, user_password, database_name).update_veiculo(placa, nova_placa,modelo, dono_do_veiculo, id_estacionamento)
+    gerencia_veiculos(host_name, user_name, user_password, database_name).update_veiculo(placa, nova_placa,modelo, dono_do_veiculo)
     
     print("Veículo atualizado com sucesso!")
 
@@ -474,12 +490,13 @@ def main():
                 connection = mysql.connector.connect(host='localhost',
                                             database='estacionamento',
                                             user='root',
-                                            password='123456')
+                                            password='totito12')
             
             except Error as e:
                 print("Erro ao conectar ao banco de dados MySQL", e)
-                continue
+                
             
+
             if connection.is_connected():
                 print('Conectado ao banco de dados MySQL')
                 

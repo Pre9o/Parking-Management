@@ -9,8 +9,10 @@ class gerencia_historico():
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
     def criar_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
-        query = f"""INSERT INTO historico (placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida)
-                    VALUES ('{placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_entrada}', '{data_saida}')"""
+
+        query = f"""INSERT INTO historico (placa_veiculo, estacionamentos_id_estacionamento, data_entrada)
+                    VALUES ('{placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_entrada}')"""
+
         self.connection.insert_into_table(query)
         
     def read_historico(self):
@@ -20,7 +22,9 @@ class gerencia_historico():
     
     def update_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
         query = f"""UPDATE historico SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}', data_entrada = '{data_entrada}', data_saida = '{data_saida}'
-                    WHERE placa_veiculo = '{placa_veiculo}'"""
+
+                    WHERE placa_veiculo = '{placa_veiculo}' AND data_saida IS NULL"""
+
         self.connection.update_table(query)
         
     def deletar_historico(self, placa_veiculo):
