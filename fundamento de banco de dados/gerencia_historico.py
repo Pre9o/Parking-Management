@@ -8,8 +8,7 @@ class gerencia_historico():
         self.database_name = database_name
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
-    def criar_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
-
+    def criar_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada):
         query = f"""INSERT INTO historico (placa_veiculo, estacionamentos_id_estacionamento, data_entrada)
                     VALUES ('{placa_veiculo}', '{estacionamentos_id_estacionamento}', '{data_entrada}')"""
 

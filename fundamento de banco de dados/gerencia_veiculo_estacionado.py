@@ -28,13 +28,11 @@ class gerencia_veiculo_estacionado():
         result = self.connection.execute_read_query(query)
         return result[0][0]
 
-    
     def get_id_estacionamento(self, placa_veiculo_estacionado):
         query = f"""SELECT estacionamentos_id_estacionamento FROM veiculo_estacionado WHERE placa_veiculo_estacionado = '{placa_veiculo_estacionado}'"""
         result = self.connection.execute_read_query(query)
         return result[0][0]
 
-    
     def update_veiculo_estacionado(self, placa_veiculo_estacionado, estacionamentos_id_estacionamento):
         query = f"""UPDATE veiculo_estacionado SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}'
                     WHERE placa_veiculo_estacionado = '{placa_veiculo_estacionado}'"""
