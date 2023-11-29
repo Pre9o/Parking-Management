@@ -19,6 +19,11 @@ class gerencia_historico():
         result = self.connection.select_from_table(query)
         return result
     
+    def pesquisar_historico(self, data_entrada, data_saida):
+        query = f"""SELECT * FROM historico WHERE data_entrada BETWEEN '{data_entrada}' AND '{data_saida}'"""
+        result = self.connection.select_from_table(query)
+        return result
+    
     def update_historico(self, placa_veiculo, estacionamentos_id_estacionamento, data_entrada, data_saida):
         query = f"""UPDATE historico SET estacionamentos_id_estacionamento = '{estacionamentos_id_estacionamento}', data_entrada = '{data_entrada}', data_saida = '{data_saida}'
 

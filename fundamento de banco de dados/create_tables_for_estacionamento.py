@@ -97,7 +97,7 @@ class create_tables_for_estacionamento():
                     placa_veiculo_estacionado VARCHAR(45) NOT NULL,
                     codigo_de_barra_usuario VARCHAR(45) NOT NULL,
                     estacionamentos_id_estacionamento INT NOT NULL,
-                    data_entrada DATETIME NOT NULL,
+                    data_hora_entrada DATETIME NOT NULL,
                     PRIMARY KEY (id_veiculo_estacionado),
                     FOREIGN KEY (placa_veiculo_estacionado) REFERENCES veiculo (placa_veiculo),
                     FOREIGN KEY (codigo_de_barra_usuario) REFERENCES usuario (codigo_de_barra),

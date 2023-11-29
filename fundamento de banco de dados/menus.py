@@ -18,7 +18,8 @@ class menus():
         while True:
             print("1 - Entrada de veículo")
             print("2 - Saída de veículo")
-            print("3 - Voltar")
+            print("3 - Pesquisar data no histórico")
+            print("4 - Voltar")
 
             opcao = int(input("Digite a opção desejada: "))
 
@@ -29,6 +30,9 @@ class menus():
                 vigilante.saida_veiculo(host_name, user_name, user_password, database_name)
 
             elif opcao == 3:
+                vigilante.pesquisar_data_no_historico(host_name, user_name, user_password, database_name)
+                
+            elif opcao == 4:
                 break
 
             else:
@@ -166,7 +170,7 @@ class menus():
                     print("2 - Gerenciar veículos")
                     print("3 - Gerenciar atribuições")
                     print("4 - Gerenciar estacionamentos")
-                    print("5 - Sair")
+                    print("5 - Voltar")
 
                     option = input("Selecione a opção que você deseja gerenciar: ")
 
@@ -193,7 +197,7 @@ class menus():
         while True:
             print("1 - Menu de gerenciamento")
             print("2 - Menu do vigilante")
-            print("3 - Sair")
+            print("3 - Voltar")
 
             option = input("Selecione a opção que você deseja gerenciar: ")
 

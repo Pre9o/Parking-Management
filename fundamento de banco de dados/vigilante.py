@@ -65,4 +65,21 @@ class vigilante():
         
         print("Saída realizada com sucesso!") 
         
-
+        
+    def pesquisar_data_no_historico(host_name, user_name, user_password, database_name):
+        data_entrada = input("Digite a data: ")
+        data_entrada = datetime.strptime(data_entrada, "%d/%m/%Y")
+        data_saida = input("Digite a data: ")
+        data_saida = datetime.strptime(data_saida, "%d/%m/%Y")
+        print(data_entrada)
+        print(data_saida)
+        
+        lista = gerencia_historico(host_name, user_name, user_password, database_name).pesquisar_historico(data_entrada, data_saida)
+        for i in lista:
+            print(i)
+            
+        print("Pesquisa realizada com sucesso!")
+        
+        if len(lista) == 0:
+            print("Não há veículos estacionados nesse período!")
+            

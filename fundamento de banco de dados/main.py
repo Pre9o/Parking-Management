@@ -43,10 +43,10 @@ def main():
                 
             
         elif option == "2":
-            create_database_for_estacionamento()
-            create_tables_for_estacionamento()
-            gerencia_atribuicao().criar_atribuicoes_padrao()
-            gerencia_estacionamento().criar_estacionamentos_padrao()
+            create_database_for_estacionamento(host_name, user_name, user_password)
+            create_tables_for_estacionamento(host_name, user_name, user_password, database_name)
+            gerencia_atribuicao(host_name, user_name, user_password, database_name).criar_atribuicoes_padrao()
+            gerencia_estacionamento(host_name, user_name, user_password, database_name).criar_estacionamentos_padrao()
 
         elif option == "3":
             menus.menu_principal(host_name, user_name, user_password, database_name)

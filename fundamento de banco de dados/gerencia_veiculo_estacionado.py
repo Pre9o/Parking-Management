@@ -9,7 +9,7 @@ class gerencia_veiculo_estacionado():
         self.connection = sql_manager(host_name, user_name, user_password, database_name)
         
     def criar_veiculo_estacionado(self, placa_veiculo_estacionado, codigo_de_barra_usuario, estacionamentos_id_estacionamento, data_entrada):
-        query = f"""INSERT INTO veiculo_estacionado (placa_veiculo_estacionado, codigo_de_barra_usuario ,estacionamentos_id_estacionamento, data_entrada)
+        query = f"""INSERT INTO veiculo_estacionado (placa_veiculo_estacionado, codigo_de_barra_usuario ,estacionamentos_id_estacionamento, data_hora_entrada)
                     VALUES ('{placa_veiculo_estacionado}', '{codigo_de_barra_usuario}' ,'{estacionamentos_id_estacionamento}', '{data_entrada}')"""
         self.connection.insert_into_table(query)
         
@@ -24,7 +24,7 @@ class gerencia_veiculo_estacionado():
         return result
         
     def read_data_entrada(self, placa_veiculo_estacionado):
-        query = f"""SELECT data_entrada FROM veiculo_estacionado WHERE placa_veiculo_estacionado = '{placa_veiculo_estacionado}'"""
+        query = f"""SELECT data_hora_entrada FROM veiculo_estacionado WHERE placa_veiculo_estacionado = '{placa_veiculo_estacionado}'"""
         result = self.connection.execute_read_query(query)
         return result[0][0]
 
