@@ -25,18 +25,18 @@ class remocoes():
 
     def remover_veiculo(host_name, user_name, user_password, database_name):
         placa = input("Digite a placa do veículo que quer remover: ").upper()
-        gerencia_veiculos().deletar_veiculo(placa)
+        gerencia_veiculos(host_name, user_name, user_password, database_name).deletar_veiculo(placa)
         
         print("Veículo removido com sucesso!")
 
     def remover_atribuicao(host_name, user_name, user_password, database_name):
         id_atribuicao = input("Digite o id da atribuição que quer remover: ")
-        gerencia_atribuicao().deletar_atribuicao(id_atribuicao)
+        gerencia_atribuicao(host_name, user_name, user_password, database_name).deletar_atribuicao(id_atribuicao)
         
         print("Atribuição removida com sucesso!")
 
     def remover_estacionamento(host_name, user_name, user_password, database_name):
         id_estacionamento = input("Digite o id do estacionamento que quer remover: ")
-        gerencia_estacionamento().deletar_estacionamento(id_estacionamento)
+        gerencia_estacionamento(host_name, user_name, user_password, database_name).deletar_estacionamento(id_estacionamento)
         
         print("Estacionamento removido com sucesso!")

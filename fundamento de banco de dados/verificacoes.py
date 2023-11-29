@@ -43,7 +43,7 @@ class verificacoes():
             while verifica == None:
                 print("Atribuição não encontrada!")
                 atribuicao = input("Digite o nome da atribuição: ").capitalize()
-                verifica = gerencia_atribuicao().get_atribuicao(atribuicao)
+                verifica = gerencia_atribuicao(host_name, user_name, user_password, database_name).get_atribuicao(atribuicao)
             
             return verifica
         
@@ -51,15 +51,15 @@ class verificacoes():
             while verifica == None:
                 print("Estacionamento não encontrado!")
                 id_estacionamento = input("Digite o id do estacionamento: ")
-                verifica = gerencia_estacionamento().get_estacionamento(id_estacionamento)
+                verifica = gerencia_estacionamento(host_name, user_name, user_password, database_name).get_estacionamento(id_estacionamento)
             
             return verifica
         
         elif tipo == "placa":
-            verifica = gerencia_veiculos().get_placa(verifica)
+            verifica = gerencia_veiculos(host_name, user_name, user_password, database_name).get_placa(verifica)
             while verifica == None:
                 print("Veículo não encontrado!")
                 placa = input("Digite a placa do veículo: ").upper()
-                verifica = gerencia_veiculos().get_placa(placa)
+                verifica = gerencia_veiculos(host_name, user_name, user_password, database_name).get_placa(placa)
             
             return verifica

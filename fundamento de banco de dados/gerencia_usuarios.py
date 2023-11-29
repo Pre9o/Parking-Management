@@ -20,7 +20,7 @@ class gerencia_usuarios():
         return result        
     
     def get_usuario(self, codigo_de_barra):
-        query = f"""SELECT nome_usuario FROM usuario 
+        query = f"""SELECT codigo_de_barra FROM usuario 
                 WHERE codigo_de_barra = '{codigo_de_barra}'"""
         result = self.connection.execute_read_query(query)
         if result:
